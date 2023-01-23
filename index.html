@@ -3,18 +3,34 @@
 
 <body background="./back.png" style="background-repeat: no-repeat;background-size: 100% 100%; height: 100vh;">
     <input type='file' id='videoUpload' />
-
     <video width="320" height="240" style="display:none" controls autoplay>
         Your browser does not support the video tag.
     </video>
+    <div id="playlist" style="background-color: rgba(255, 255, 255, 0.4);"></div>
 </body>
 <script>
+    let videos = [];
+    let files = ["Play next"];
+    let index = 0;
     document.getElementById("videoUpload").onchange = function (event) {
         let file = event.target.files[0];
         let blobURL = URL.createObjectURL(file);
+        videos.push(blobURL);
+        files.push(file.name);
+        document.getElementById("playlist").innerText = files.join("\n");
         document.querySelector("video").style.display = 'block';
-        document.querySelector("video").src = blobURL;
+        document.querySelector("video").src = videos[index];
+        
     }
+    document.querySelector("video").onended = function (event){
+        document.querySelector("video").style.display = 'block';
+        files.shift();
+        document.getElementById("playlist").innerText = files.join("\n");
+        index++;
+        if(index>videos.length) return;
+        document.querySelector("video").src = videos[index];
+    }
+
 </script>
 
 </html>
